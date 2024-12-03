@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { IdDto } from './dto/id.dto';
 
@@ -7,8 +7,8 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  async findAll() {
-    return this.categoriesService.getAllCategory();
+  async findAll(@Query() { order, page, limit }) {
+    return this.categoriesService.getAllCategory(+page, +limit, order);
   }
 
   @Get(':id')

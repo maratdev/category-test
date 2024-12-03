@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { IdDto } from './dto/id.dto';
 import { CategoryModel } from './model/category.model';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, SortOrder } from 'mongoose';
 
 @Injectable()
 export class CategoriesService {
@@ -11,10 +11,15 @@ export class CategoriesService {
     private readonly categoryModel: Model<CategoryModel>,
   ) {}
 
-  async getAllCategory(): Promise<CategoryModel[]> {
+  async getAllCategory(
+    page: number = 1,
+    limit: number = 100,
+    order: SortOrder = 'desc',
+  ): Promise<CategoryModel[]> {
     const allData = await this.categoryModel
       .find()
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: order })
+      .skip((page - 1) * limit)
       .limit(100);
 
     if (!(allData || [allData].length === 0)) {
